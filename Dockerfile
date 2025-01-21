@@ -9,8 +9,8 @@ COPY src/utils.tcl ./
 COPY src/schema.sql ./
 
 ENV PORT 8080
-ENV ADMIN_KEY ""
+ENV ADMINKEY ""
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD tclsh main.tcl --port $PORT --admin_key $ADMIN_KEY
+CMD tclsh main.tcl --port $PORT --adminkey $ADMINKEY

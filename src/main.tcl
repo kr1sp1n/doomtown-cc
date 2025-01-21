@@ -19,7 +19,7 @@ set dbfile $script_path/../doomtown.sqlite
 set files_path [file normalize $script_path/../files]
 
 # Default admin key:
-set admin_key ""
+set adminkey ""
 
 # Parse start arguments:
 set n [llength $argv]
@@ -39,14 +39,14 @@ for {set i 0} {$i<$n} {incr i} {
       incr i;
       set files_path [lindex $argv $i]
     }
-    -admin_key {
+    -adminkey {
       incr i;
-      set admin_key [lindex $argv $i]
+      set adminkey [lindex $argv $i]
     }
   }
 }
 
-if {$admin_key eq ""} {
+if {$adminkey eq ""} {
   puts "WARNING: No admin key set."
 }
 
@@ -191,6 +191,7 @@ POST /files/raw/:hash {
 GET /files/:hash {
   layout {
     wapp-allow-xorigin-params
+    # puts [wapp-debug-env]
     set file_hash [dict get [wapp-param PATH_PARAMS] hash]
     set row [get-file $file_hash]
     if {[llength $row] == 0} {
@@ -286,9 +287,9 @@ GET /tags {
 }
 
 proc is_admin {} {
-  global admin_key
+  global adminkey
   # puts [wapp-debug-env]
-  return [expr {$admin_key eq [wapp-param admin_key]}]
+  return [expr {$adminkey eq [wapp-param adminkey]}]
 }
 
 proc get_file_path {file_hash file_extension} {
@@ -298,7 +299,6 @@ proc get_file_path {file_hash file_extension} {
 
 GET /tags/:id {
   layout {
-    wapp-allow-xorigin-params
     set tag_id [dict get [wapp-param PATH_PARAMS] id]
 
     if {[is_admin]} {
