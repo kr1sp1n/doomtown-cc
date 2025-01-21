@@ -299,6 +299,7 @@ proc get_file_path {file_hash file_extension} {
 
 GET /tags/:id {
   layout {
+    wapp-allow-xorigin-params
     set tag_id [dict get [wapp-param PATH_PARAMS] id]
 
     if {[is_admin]} {
