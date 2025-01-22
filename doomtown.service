@@ -8,6 +8,7 @@ ExecStart=/usr/bin/tclsh /home/dietpi/doomtown/src/main.tcl \
   --db /srv/doomtown/doomtown.sqlite \
   --files /srv/doomtown/files \
   --adminkey $ADMINKEY
+  --baseurl $BASEURL
 WorkingDirectory=/home/dietpi/doomtown/
 StandardOutput=inherit
 StandardError=inherit

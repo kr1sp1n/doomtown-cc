@@ -10,7 +10,8 @@ source $script_path/utils.tcl
 # Default port:
 set port 8080
 
-set base_url "http://localhost:$port"
+# Default base url:
+set baseurl "http://localhost:$port"
 
 # Default db file:
 set dbfile $script_path/../doomtown.sqlite
@@ -42,6 +43,10 @@ for {set i 0} {$i<$n} {incr i} {
     -adminkey {
       incr i;
       set adminkey [lindex $argv $i]
+    }
+    -baseurl {
+      incr i;
+      set baseurl [lindex $argv $i]
     }
   }
 }
@@ -399,7 +404,7 @@ HEAD /rss {
 }
 
 GET /rss {
-  global base_url
+  global baseurl
   set query "SELECT hash, name, title, extension, type, description, created_at FROM files ORDER BY created_at DESC LIMIT 10"
   wapp-reset
   wapp-mimetype "text/xml; charset=utf-8"
@@ -409,7 +414,7 @@ GET /rss {
       <channel>
         <title>doomtown cottbus</title>
         <description>Neue Dateien als RSS-Feed</description>
-        <link>%url($base_url)</link>
+        <link>%url($baseurl)</link>
         <lastBuildDate>Mon, 6 Sep 2010 00:01:00 +0000</lastBuildDate>
         <pubDate>Sun, 6 Sep 2009 16:20:00 +0000</pubDate>
         <ttl>1800</ttl>
@@ -429,11 +434,11 @@ GET /rss {
       <item>
         <title>%html($item_title)</title>
         <description><!\[CDATA\[%html($item_description)\]\]></description>
-        <link>%url($base_url)%url(/files/$hash)</link>
-        <guid>%url($base_url)%url(/files/$hash)</guid>
+        <link>%url($baseurl)%url(/files/$hash)</link>
+        <guid>%url($baseurl)%url(/files/$hash)</guid>
         <pubDate>%html($created_at)</pubDate>
-        <media:content url="%url($base_url)%url(/files/raw/$hash)" medium="image" type="%html($type)" />
-        <atom:link href="%url($base_url)%url(/files/$hash)" hreflang="de"/>
+        <media:content url="%url($baseurl)%url(/files/raw/$hash)" medium="image" type="%html($type)" />
+        <atom:link href="%url($baseurl)%url(/files/$hash)" hreflang="de"/>
       </item>
     }
   }
@@ -537,7 +542,7 @@ proc header {} {
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-      <link href="%url([wapp-param SCRIPT_NAME]/style.css)" rel="stylesheet">
+      <link href="%url(/style.css)" rel="stylesheet">
       <link rel="alternate" type="application/rss+xml" title="doomtown cottbus" href="/rss"/>
       <title>doomtown</title>
     </head>
@@ -595,9 +600,10 @@ proc show-text {content} {
 }
 
 proc show-audio {type path} {
+  global baseurl
   wapp-trim {
     <audio controls>
-      <source src="%url($path)" type="%html($type)">
+      <source src="%url($baseurl)%url($path)" type="%html($type)">
       Your browser does not support the audio element.
     </audio>
   }
