@@ -8,5 +8,5 @@
   url = git@github.com:kr1sp1n/doomtown.git
   fetch = +refs/heads/*:refs/remotes/gh/*
 [remote "dt"]
-  url = git@doomtown.local:/srv/git/doomtown.git
+  url = git@192.168.178.27:/srv/git/doomtown.git
   fetch = +refs/heads/*:refs/remotes/dt/*

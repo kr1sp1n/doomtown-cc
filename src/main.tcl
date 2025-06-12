@@ -233,7 +233,7 @@ GET /files/:hash {
           </p>
         </form>
       }
-      wapp-subst {<p>Stichwörter:&nbsp;}
+      wapp-subst {<p>Stichwoerter:&nbsp;}
       foreach {tag} [split [lsort $tags] " "] {
         wapp-trim {
           <a href="">%html($tag)</a>&nbsp;
@@ -244,15 +244,15 @@ GET /files/:hash {
         <form method="POST" action="/tags">
           <input type="hidden" name="file_hash" value="%html($file_hash)"/>
           <input type="text" name="tags" value=""/>
-          <input type="submit" value="Stichwörter hinzufügen" />
-          <p>Es können mehrere Stichwörter durch Leerzeichen getrennt eingegeben werden.</p>
+          <input type="submit" value="Stichwoerter hinzufuegen" />
+          <p>Es koennen mehrere Stichwoerter durch Leerzeichen getrennt eingegeben werden.</p>
         </form>
       }
       if {[is_admin]} {
         wapp-trim {
           <form method="POST" action="/files/delete">
             <input type="hidden" name="file_hash" value="%html($file_hash)"/>
-            <input class="red" type="submit" value="Datei löschen" />
+            <input class="red" type="submit" value="Datei loeschen" />
           </form>
         }
       }
@@ -267,7 +267,7 @@ GET /files/:hash {
 
 GET /tags {
   layout {
-    wapp-subst {<h2>Stichwörter</h2>}
+    wapp-subst {<h2>Stichwoerter</h2>}
     set query "SELECT id, name FROM tags"
     set search [wapp-param search]
     if {$search != ""} {
@@ -311,7 +311,7 @@ GET /tags/:id {
       wapp-trim {
         <form method="POST" action="/tags/delete">
           <input type="hidden" name="tag_id" value="%html($tag_id)"/>
-          <input type="submit" class="red" value="Stichwort löschen" />
+          <input type="submit" class="red" value="Stichwort loeschen" />
         </form>
       }
     }
@@ -372,7 +372,7 @@ GET /upload {
       <h2>Upload</h2>
       <form method="POST" enctype="multipart/form-data">
         <p>
-          Datei auswählen: <input type="file" name="file" />
+          Datei auswaehlen: <input type="file" name="file" />
         </p>
         <p>
           <input type="submit" value="Hochladen" />
@@ -445,15 +445,46 @@ GET /rss {
   wapp-subst {</channel></rss>}
 }
 
+# to render website for the www:
+GET /web {
+  layout {
+    wapp-trim {
+      <h2>Willkommen in Doomtown</h2>
+      <p>
+        Digital ohne Internet: Stellt euch eine Welt vor, wo es ein feines Gespinst aus lokalen Netzwerken gibt. 
+        Wir verbinden uns nicht mit den Sendemasten der Konzerne, sondern mit oeffentlichen WLAN-Routern, die uns Zugang zu unserem eigenen lokalen Netzwerk verschaffen.
+        Wir bauen eine Gemeinschaft auf, ohne Zeitfresser wie Facebook, Instagram oder Whatsapp. Wir bauen gemeinsam unser eigenes, soziales Netzwerk auf, ohne dass wir ueberwacht, manipuliert und mit Werbung vollgeballert werden. 
+        Wir entdecken lokale Menschen, Gruppen, Orte und Dinge. Mit kleinem oekonomischen und oekologischen Fussabdruck bilden wir ein digitales Refugium.
+      </p>
+      <h2>Naechster Termin</h2>
+      <p>Noch nix geplant.
+
+      <h2>Vergangene Termine</h2>
+      
+      <h3>30.04.2025 18:00 - 20:00</h3>
+      <p>
+      Im fablab Cottbus auf dem Campus der BTU:<br/>
+      Walther-Pauer-Str. 7, 03046 Cottbus
+      </p>
+      
+      <h3>22.01.2025 17:00 - 19:00</h3>
+      <p>
+      Im fablab Cottbus auf dem Campus der BTU:<br/>
+      Walther-Pauer-Str. 7, 03046 Cottbus
+      </p>
+    }
+  } "1"
+}
+
 proc wapp-default {} {
   layout {
     wapp-trim {
       <h2>Willkommen in Doomtown</h2>
       <p>
         Dies ist ein lokales Netzwerk, ohne Verbindung zum Internet.
-        Es wird nur über einen mobilen WLAN-Router bereitgestellt.
+        Es wird nur ueber einen mobilen WLAN-Router bereitgestellt.
         Der Router taucht ab und zu einfach so in der Stadt auf.
-        Du kannst anonym Dateien hochladen und sie bleiben für die Nachwelt erhalten.
+        Du kannst anonym Dateien hochladen und sie bleiben fuer die Nachwelt erhalten.
         Schreibe Texte, lade Bilder hoch oder suche nach Dateien von anderen Menschen.
       </p>
     }
@@ -535,7 +566,7 @@ proc add-tag {name file_hash} {
   return $tag_id
 }
 
-proc header {} {
+proc header {web} {
   wapp-trim {
     <!DOCTYPE html>
     <html>
@@ -552,41 +583,51 @@ proc header {} {
           <img class="logo" src="/header.gif" alt="DOOMTOWN" />
           <header>
             <h1>Lokales Netzwerk Cottbus</h1>
+  }
+  if {$web eq ""} {
+    wapp-trim {
             <nav>
               <ul>
                 <li><a href="/">Index</a></li>
                 <li><a href="/files">Dateien</a></li>
                 <li><a href="/apps">Programme</a></li>
-                <li><a href="/tags">Stichwörter</a></li>
+                <li><a href="/tags">Stichwoerter</a></li>
                 <li><a href="/upload">Upload</a></li>
                 <li><a href="/contact">Kontakt</a></li>
               </ul>
             </nav>
-          </header>
-        </div>
+    }
+  }
+  wapp-trim {
+    </header>
+    </div>
   }
 }
 
-proc footer {} {
-  wapp-trim {
+proc footer {web} {
+  if {$web eq ""} {
+    wapp-trim {
       <div class="footer">
         <p><a href="/rss" target="rss">RSS</a></p>
         <p class="small"></p>
       </div>
+    }
+  }
+  wapp-trim {
     </div>
     </body>
     </html>
   }
 }
 
-proc layout {content} {
+proc layout {content {web ""}} {
   wapp-content-security-policy off
   # {default-src 'self'; img-src 'self' data:}
-  header
+  header $web
   wapp-subst {<div class="content"><div class="wrap">}
   eval $content
   wapp-subst {</div></div>}
-  footer
+  footer $web
 }
 
 proc show-text {content} {
@@ -753,6 +794,10 @@ proc wapp-page-style.css {} {
 
     .content .image {
       width: 50%;
+    }
+
+    .content h3 {
+      padding: 0.5em 0 0.5em 0;
     }
   }
 }
