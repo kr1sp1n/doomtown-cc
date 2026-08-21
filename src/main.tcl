@@ -234,9 +234,10 @@ GET /files/:hash {
         </form>
       }
       wapp-subst {<p>Stichwoerter:&nbsp;}
-      foreach {tag} [split [lsort $tags] " "] {
+      foreach {tag} [split $tags "|"] {
+        lassign $tag id name
         wapp-trim {
-          <a href="">%html($tag)</a>&nbsp;
+          <a href="/tags/%html($id)">%html($name)</a>&nbsp;
         }
       }
       wapp-subst {</p>}
@@ -476,6 +477,10 @@ GET /web {
   } "1"
 }
 
+GET /podcast {
+  
+}
+
 proc wapp-default {} {
   layout {
     wapp-trim {
@@ -494,7 +499,13 @@ proc wapp-default {} {
 proc get-file {hash} {
   # Get file details and will only work if at least 1 tag is present:
   set row [db eval "
-    SELECT files.hash, files.name, files.title, files.description, files.type, files.extension, GROUP_CONCAT(tags.name,' ') AS tags
+    SELECT files.hash,
+      files.name,
+      files.title,
+      files.description,
+      files.type,
+      files.extension,
+      GROUP_CONCAT(tags.id || ' ' || tags.name, '|') AS tags
     FROM files
     JOIN files_tags ON files.hash = files_tags.file_hash 
     JOIN tags ON tags.id = files_tags.tag_id
